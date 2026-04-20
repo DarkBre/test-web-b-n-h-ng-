@@ -6,15 +6,21 @@ import { roleLabels } from '../utils/auth'
 
 type AuthPageProps = {
   user: User | null
-  onLogin: (email: string, password: string) => AuthResult
+  onLogin: (email: string, password: string) => AuthResult | Promise<AuthResult>
   onLogout: () => void
-  onRegister: (name: string, email: string, password: string, role: AccountRole) => AuthResult
+  onRegister: (
+    name: string,
+    email: string,
+    password: string,
+    role: AccountRole,
+  ) => AuthResult | Promise<AuthResult>
 }
 
 export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps) {
   const location = useLocation()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: user?.name ?? '',
     email: '',
@@ -29,14 +35,20 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
       ? location.state.redirectReason
       : ''
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault()
-    const result =
-      mode === 'login'
-        ? onLogin(form.email, form.password)
-        : onRegister(form.name, form.email, form.password, form.role)
+    setLoading(true)
 
-    setStatus(result.message)
+    try {
+      const result =
+        mode === 'login'
+          ? await onLogin(form.email, form.password)
+          : await onRegister(form.name, form.email, form.password, form.role)
+
+      setStatus(result.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const switchMode = () => {
@@ -142,7 +154,9 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
               </select>
             </label>
           ) : null}
-          <button type="submit">{mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}</button>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
+          </button>
         </form>
 
         <button className="ghost-button" onClick={switchMode}>

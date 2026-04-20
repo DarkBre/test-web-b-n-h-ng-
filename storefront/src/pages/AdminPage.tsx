@@ -7,10 +7,11 @@ import { formatPrice } from '../utils/format'
 type AdminPageProps = {
   accounts: RegisteredUser[]
   ordersCount: number
+  productSource: 'local' | 'database'
   products: Product[]
-  onAddProduct: (product: Omit<Product, 'id'>) => void
-  onUpdateProduct: (product: Product) => void
-  onDeleteProduct: (productId: number) => void
+  onAddProduct: (product: Omit<Product, 'id'>) => void | Promise<void>
+  onUpdateProduct: (product: Product) => void | Promise<void>
+  onDeleteProduct: (productId: number) => void | Promise<void>
 }
 
 type ProductForm = {
@@ -59,6 +60,7 @@ const toProductPayload = (form: ProductForm): Omit<Product, 'id'> => ({
 export function AdminPage({
   accounts,
   ordersCount,
+  productSource,
   products,
   onAddProduct,
   onUpdateProduct,
@@ -68,7 +70,7 @@ export function AdminPage({
   const [message, setMessage] = useState('')
   const isEditing = typeof form.id === 'number'
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault()
     const payload = toProductPayload(form)
 
@@ -88,10 +90,10 @@ export function AdminPage({
     }
 
     if (isEditing) {
-      onUpdateProduct({ ...payload, id: form.id! })
+      await onUpdateProduct({ ...payload, id: form.id! })
       setMessage('Đã cập nhật sản phẩm.')
     } else {
-      onAddProduct(payload)
+      await onAddProduct(payload)
       setMessage('Đã thêm sản phẩm mới.')
     }
 
@@ -114,8 +116,8 @@ export function AdminPage({
     })
   }
 
-  const deleteProduct = (productId: number) => {
-    onDeleteProduct(productId)
+  const deleteProduct = async (productId: number) => {
+    await onDeleteProduct(productId)
     if (form.id === productId) {
       setForm(emptyForm)
     }
@@ -142,6 +144,10 @@ export function AdminPage({
           <article className="admin-card">
             <span>Giỏ hàng hiện tại</span>
             <strong>{ordersCount}</strong>
+          </article>
+          <article className="admin-card">
+            <span>Nguồn dữ liệu</span>
+            <strong>{productSource === 'database' ? 'MySQL' : 'Local'}</strong>
           </article>
         </div>
 

@@ -34,8 +34,3 @@ export type AuthResult = {
   ok: boolean
   message: string
 }
-
-export type ChatMessage = {
-  role: 'bot' | 'user'
-  text: string
-}

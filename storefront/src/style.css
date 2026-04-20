@@ -94,7 +94,6 @@ button {
 .summary-card,
 .auth-panel,
 .hero-card,
-.chat-widget,
 .product-card,
 .detail-panel,
 .site-footer,
@@ -142,7 +141,6 @@ h3 {
 }
 
 .brand span,
-.chat-header span,
 .hero-copy,
 .detail-copy,
 .product-card p,
@@ -220,7 +218,6 @@ h3 {
 .actions a,
 .checkout-form button,
 .success-box button,
-.chat-form button,
 .footer-newsletter button {
   display: inline-flex;
   align-items: center;
@@ -243,7 +240,6 @@ h3 {
 .actions a:hover,
 .checkout-form button:hover,
 .success-box button:hover,
-.chat-form button:hover,
 .footer-newsletter button:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 28px rgba(239, 106, 33, 0.24);
@@ -577,7 +573,6 @@ h3 {
 .checkout-form input,
 .checkout-form textarea,
 .checkout-form select,
-.chat-form input,
 .footer-newsletter input {
   width: 100%;
   border: 1px solid rgba(16, 35, 59, 0.16);
@@ -594,7 +589,6 @@ h3 {
 .checkout-form input:focus,
 .checkout-form textarea:focus,
 .checkout-form select:focus,
-.chat-form input:focus,
 .footer-newsletter input:focus {
   outline: none;
   border-color: rgba(10, 143, 134, 0.44);
@@ -654,7 +648,6 @@ h3 {
 .product-footer,
 .section-head,
 .summary-line,
-.chat-header,
 .cart-row,
 .stepper,
 .actions,
@@ -669,7 +662,6 @@ h3 {
 .product-meta,
 .section-head,
 .summary-line,
-.chat-header,
 .cart-row,
 .footer-bottom {
   justify-content: space-between;
@@ -849,7 +841,7 @@ h3 {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(16, 35, 59, 0.12);
   box-shadow: 0 24px 48px rgba(10, 24, 43, 0.22);
-  animation: widgetIn 220ms ease;
+  animation: modalIn 220ms ease;
 }
 
 .payment-modal-head {
@@ -1220,69 +1212,6 @@ h3 {
   font-size: 0.92rem;
 }
 
-.chat-fab {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #10233b, #0a8f86);
-  color: white;
-  font-weight: 800;
-  box-shadow: var(--shadow);
-  animation: pulseSoft 2.8s ease-in-out infinite;
-}
-
-.chat-widget {
-  position: fixed;
-  right: 24px;
-  bottom: 98px;
-  width: min(390px, calc(100vw - 24px));
-  border-radius: 26px;
-  overflow: hidden;
-  animation: widgetIn 220ms ease;
-}
-
-.chat-header {
-  padding: 18px 18px 12px;
-}
-
-.chat-header button {
-  background: transparent;
-  font-size: 1.1rem;
-}
-
-.chat-body {
-  display: grid;
-  gap: 10px;
-  padding: 0 18px 16px;
-  max-height: 340px;
-  overflow: auto;
-}
-
-.bubble {
-  max-width: 88%;
-  padding: 12px 14px;
-  border-radius: 18px;
-  animation: bubbleIn 180ms ease;
-}
-
-.bubble.bot {
-  background: rgba(16, 35, 59, 0.08);
-}
-
-.bubble.user {
-  margin-left: auto;
-  background: rgba(239, 106, 33, 0.14);
-}
-
-.chat-form {
-  display: flex;
-  gap: 10px;
-  padding: 0 18px 18px;
-}
-
 @keyframes pageIn {
   from {
     opacity: 0;
@@ -1307,7 +1236,7 @@ h3 {
   }
 }
 
-@keyframes widgetIn {
+@keyframes modalIn {
   from {
     opacity: 0;
     transform: translateY(10px) scale(0.98);
@@ -1316,31 +1245,6 @@ h3 {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes bubbleIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulseSoft {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: var(--shadow);
-  }
-
-  50% {
-    transform: scale(1.04);
-    box-shadow: 0 18px 42px rgba(10, 143, 134, 0.22);
   }
 }
 
@@ -1442,7 +1346,6 @@ h3 {
   .input-grid,
   .toolbar,
   .cart-row,
-  .chat-form,
   .footer-newsletter,
   .footer-bottom {
     flex-direction: column;
