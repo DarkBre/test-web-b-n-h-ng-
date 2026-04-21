@@ -22,7 +22,7 @@ import {
 } from './services/productsApi'
 import type { AccountRole, AuthResult, CartItem, Category, Product, RegisteredUser, User } from './types'
 import { normalizeUser, roleLabels, seedAccounts } from './utils/auth'
-import { readStorage } from './utils/storage'
+import { readSessionStorage, readStorage } from './utils/storage'
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'Tất cả'>('Tất cả')
@@ -35,14 +35,21 @@ function App() {
   const [accounts, setAccounts] = useState<RegisteredUser[]>(() =>
     seedAccounts(readStorage<RegisteredUser[]>('accounts', [])),
   )
-  const [user, setUser] = useState<User | null>(() => normalizeUser(readStorage<User | null>('user', null)))
+  const [user, setUser] = useState<User | null>(() =>
+    normalizeUser(readSessionStorage<User | null>('user', null)),
+  )
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user))
+    if (user) {
+      sessionStorage.setItem('user', JSON.stringify(user))
+    } else {
+      sessionStorage.removeItem('user')
+    }
+    localStorage.removeItem('user')
   }, [user])
 
   useEffect(() => {
@@ -314,19 +321,37 @@ function App() {
         <Route
           path="/"
           element={
-            <HomePage
-              products={filteredProducts}
-              category={selectedCategory}
-              search={search}
-              setCategory={setSelectedCategory}
-              setSearch={setSearch}
-              onAddToCart={addToCart}
-            />
+            user ? (
+              <HomePage
+                products={filteredProducts}
+                category={selectedCategory}
+                search={search}
+                setCategory={setSelectedCategory}
+                setSearch={setSearch}
+                onAddToCart={addToCart}
+              />
+            ) : (
+              <Navigate
+                replace
+                to="/auth"
+                state={{ redirectReason: 'Vui lòng đăng nhập để truy cập hệ thống.' }}
+              />
+            )
           }
         />
         <Route
           path="/products/:id"
-          element={<ProductDetailPage onAddToCart={addToCart} products={products} />}
+          element={
+            user ? (
+              <ProductDetailPage onAddToCart={addToCart} products={products} />
+            ) : (
+              <Navigate
+                replace
+                to="/auth"
+                state={{ redirectReason: 'Vui lòng đăng nhập để xem chi tiết sản phẩm.' }}
+              />
+            )
+          }
         />
         <Route
           path="/cart"
