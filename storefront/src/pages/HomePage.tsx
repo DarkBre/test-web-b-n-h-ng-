@@ -1,19 +1,26 @@
 import { Link } from 'react-router-dom'
 import { HeroProductSlider } from '../components/HeroProductSlider'
-import { categories, highlights } from '../data/products'
-import type { Category, Product } from '../types'
+import type { Product } from '../types'
 import { formatPrice } from '../utils/format'
 
+const highlights = [
+  { label: 'Ưu đãi hôm nay', value: 'Mua 2 giảm thêm 10%' },
+  { label: 'Giao nhanh', value: 'Nhận hàng trong ngày tại nội thành' },
+  { label: 'Tư vấn chuyên sâu', value: 'Chọn đúng sản phẩm với hỗ trợ 24/7' },
+]
+
 type HomePageProps = {
+  categories: string[]
   products: Product[]
-  category: Category | 'Tất cả'
+  category: string
   search: string
-  setCategory: (value: Category | 'Tất cả') => void
+  setCategory: (value: string) => void
   setSearch: (value: string) => void
   onAddToCart: (productId: number) => void
 }
 
 export function HomePage({
+  categories,
   products,
   category,
   search,

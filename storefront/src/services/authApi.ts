@@ -8,6 +8,14 @@ type AuthResponse = {
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost/novatech-api'
 const AUTH_ENDPOINT = `${API_BASE}/auth.php`
 
+const fetchApi = async (input: RequestInfo | URL, init?: RequestInit) => {
+  try {
+    return await fetch(input, init)
+  } catch {
+    throw new Error('Không kết nối được backend. Hãy bật Apache/MySQL trong XAMPP và kiểm tra http://localhost/novatech-api/auth.php?action=list.')
+  }
+}
+
 const parseResponse = async <T>(response: Response): Promise<T> => {
   const payload = await response.json().catch(() => null)
 
@@ -31,7 +39,7 @@ const normalizeUser = (user: User): User => ({
 
 export const fetchUsers = async (): Promise<User[]> => {
   const users = await parseResponse<User[]>(
-    await fetch(`${AUTH_ENDPOINT}?action=list`, {
+    await fetchApi(`${AUTH_ENDPOINT}?action=list`, {
       credentials: 'include',
     }),
   )
@@ -40,7 +48,7 @@ export const fetchUsers = async (): Promise<User[]> => {
 
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
   const response = await parseResponse<AuthResponse>(
-    await fetch(`${AUTH_ENDPOINT}?action=login`, {
+    await fetchApi(`${AUTH_ENDPOINT}?action=login`, {
       body: JSON.stringify({ email, password }),
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -60,7 +68,7 @@ export const register = async (
   password: string,
 ): Promise<AuthResponse> => {
   const response = await parseResponse<AuthResponse>(
-    await fetch(`${AUTH_ENDPOINT}?action=register`, {
+    await fetchApi(`${AUTH_ENDPOINT}?action=register`, {
       body: JSON.stringify({ email, name, password }),
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -76,7 +84,7 @@ export const register = async (
 
 export const fetchCurrentUser = async (): Promise<User> => {
   const response = await parseResponse<{ user: User }>(
-    await fetch(`${AUTH_ENDPOINT}?action=me`, {
+    await fetchApi(`${AUTH_ENDPOINT}?action=me`, {
       credentials: 'include',
     }),
   )
@@ -86,7 +94,7 @@ export const fetchCurrentUser = async (): Promise<User> => {
 
 export const logout = async (): Promise<{ message: string }> => {
   return parseResponse<{ message: string }>(
-    await fetch(`${AUTH_ENDPOINT}?action=logout`, {
+    await fetchApi(`${AUTH_ENDPOINT}?action=logout`, {
       credentials: 'include',
       method: 'POST',
     }),

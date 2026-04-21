@@ -125,7 +125,7 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
               type="email"
               value={form.email}
               onChange={(event) => setForm({ ...form, email: event.target.value })}
-              placeholder="user@novatech.vn"
+              placeholder="email@example.com"
             />
           </label>
           <label>
@@ -138,7 +138,6 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
               placeholder="Tối thiểu 6 ký tự"
             />
           </label>
-          {mode === 'register' ? <p className="detail-copy">Tài khoản web chỉ đăng ký vai trò khách hàng.</p> : null}
           <button type="submit" disabled={loading}>
             {loading ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
           </button>
@@ -147,12 +146,6 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
         <button className="ghost-button" onClick={switchMode}>
           {mode === 'login' ? 'Chưa có tài khoản? Đăng ký' : 'Đã có tài khoản? Đăng nhập'}
         </button>
-
-        <div className="auth-demo-box">
-          <strong>Tài khoản demo</strong>
-          <span>Admin: admin@novatech.vn / admin123</span>
-          <span>Khách hàng: user@novatech.vn / user123</span>
-        </div>
       </section>
     </main>
   )

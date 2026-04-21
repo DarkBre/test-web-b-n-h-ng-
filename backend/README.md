@@ -9,8 +9,8 @@ backend/
   config/
     database.php               # Kết nối MySQL, CORS, JSON helper
   controllers/
-    AuthController.php         # Xử lý đăng nhập, đăng ký, phân quyền
-    ProductController.php      # Xử lý CRUD sản phẩm
+    AuthController.php         # Xử lý đăng nhập, đăng ký, đăng xuất, phân quyền
+    ProductController.php      # Đọc danh sách sản phẩm
   models/
     User.php                   # Truy vấn bảng users
     Product.php                # Truy vấn bảng products
@@ -29,7 +29,7 @@ backend/
 5. Tạo thư mục `novatech-api` trong thư mục `htdocs` của XAMPP đang chạy.
 6. Copy toàn bộ file bên trong thư mục `backend` vào thư mục đó.
 
-Trên máy hiện tại, Apache đang đọc `C:\xampp\htdocs`, nên backend đã được đồng bộ vào:
+Trên máy hiện tại, Apache đang đọc `C:\xampp\htdocs`, nên backend cần nằm tại:
 
 ```text
 C:\xampp\htdocs\novatech-api
@@ -49,13 +49,6 @@ http://localhost/novatech-api/auth.php?action=list
 ```
 
 Nếu trả về JSON là backend đã chạy.
-
-## Tài khoản demo
-
-```text
-Admin: admin@novatech.vn / admin123
-Khách hàng: user@novatech.vn / user123
-```
 
 ## Cấu hình database
 
@@ -83,7 +76,9 @@ npm run dev
 
 Frontend hiện dùng:
 
-- `products.php` cho danh sách sản phẩm và trang admin thêm/sửa/xóa sản phẩm.
+- `products.php` để đọc danh sách sản phẩm từ MySQL.
 - `auth.php?action=login` cho đăng nhập.
 - `auth.php?action=register` cho đăng ký.
-- `auth.php?action=list` để trang admin đọc danh sách tài khoản.
+- `auth.php?action=logout` cho đăng xuất.
+- `auth.php?action=me` để kiểm tra phiên đăng nhập hiện tại.
+- `auth.php?action=list` để trang quản trị đọc danh sách tài khoản.

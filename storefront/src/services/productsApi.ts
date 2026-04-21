@@ -42,38 +42,3 @@ export const fetchProducts = async (): Promise<Product[]> => {
   )
   return products.map(normalizeProduct)
 }
-
-export const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
-  const created = await parseResponse<Product>(
-    await fetch(PRODUCTS_ENDPOINT, {
-      body: JSON.stringify(product),
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    }),
-  )
-
-  return normalizeProduct(created)
-}
-
-export const updateProduct = async (product: Product): Promise<Product> => {
-  const updated = await parseResponse<Product>(
-    await fetch(`${PRODUCTS_ENDPOINT}?id=${product.id}`, {
-      body: JSON.stringify(product),
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      method: 'PUT',
-    }),
-  )
-
-  return normalizeProduct(updated)
-}
-
-export const deleteProduct = async (productId: number): Promise<void> => {
-  await parseResponse<{ ok: boolean }>(
-    await fetch(`${PRODUCTS_ENDPOINT}?id=${productId}`, {
-      credentials: 'include',
-      method: 'DELETE',
-    }),
-  )
-}

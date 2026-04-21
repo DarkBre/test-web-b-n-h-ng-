@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
-import { products as initialProducts } from './data/products'
 import { AdminPage } from './pages/AdminPage'
 import { AuthPage } from './pages/AuthPage'
 import { CartPage } from './pages/CartPage'
@@ -16,27 +15,17 @@ import {
   logout as logoutWithApi,
   register as registerWithApi,
 } from './services/authApi'
-import {
-  createProduct,
-  deleteProduct as deleteProductFromApi,
-  fetchProducts,
-  updateProduct as updateProductOnApi,
-} from './services/productsApi'
-import type { AuthResult, CartItem, Category, Product, RegisteredUser, User } from './types'
-import { normalizeUser, roleLabels, seedAccounts } from './utils/auth'
+import { fetchProducts } from './services/productsApi'
+import type { AuthResult, CartItem, Product, User } from './types'
+import { normalizeUser, roleLabels } from './utils/auth'
 import { readSessionStorage, readStorage } from './utils/storage'
 
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'Tất cả'>('Tất cả')
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả')
   const [search, setSearch] = useState('')
-  const [products, setProducts] = useState<Product[]>(() =>
-    readStorage<Product[]>('products', initialProducts),
-  )
-  const [productSource, setProductSource] = useState<'local' | 'database'>('local')
+  const [products, setProducts] = useState<Product[]>([])
   const [cart, setCart] = useState<CartItem[]>(() => readStorage<CartItem[]>('cart', []))
-  const [accounts, setAccounts] = useState<RegisteredUser[]>(() =>
-    seedAccounts(readStorage<RegisteredUser[]>('accounts', [])),
-  )
+  const [accounts, setAccounts] = useState<User[]>([])
   const [user, setUser] = useState<User | null>(() =>
     normalizeUser(readSessionStorage<User | null>('user', null)),
   )
@@ -55,19 +44,8 @@ function App() {
   }, [user])
 
   useEffect(() => {
-    localStorage.setItem('accounts', JSON.stringify(accounts))
-  }, [accounts])
-
-  useEffect(() => {
     fetchUsers()
-      .then((databaseUsers) => {
-        setAccounts(
-          databaseUsers.map((account) => ({
-            ...account,
-            password: '',
-          })),
-        )
-      })
+      .then(setAccounts)
       .catch(() => undefined)
   }, [])
 
@@ -82,13 +60,12 @@ function App() {
 
     fetchProducts()
       .then((databaseProducts) => {
-        if (cancelled || databaseProducts.length === 0) return
+        if (cancelled) return
         setProducts(databaseProducts)
-        setProductSource('database')
       })
       .catch(() => {
         if (!cancelled) {
-          setProductSource('local')
+          setProducts([])
         }
       })
 
@@ -96,10 +73,6 @@ function App() {
       cancelled = true
     }
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products))
-  }, [products])
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -113,7 +86,11 @@ function App() {
 
       return matchesCategory && matchesSearch
     })
-  }, [search, selectedCategory])
+  }, [products, search, selectedCategory])
+
+  const categories = useMemo(() => {
+    return ['Tất cả', ...Array.from(new Set(products.map((product) => product.category).filter(Boolean)))]
+  }, [products])
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
   const subtotal = cart.reduce((total, item) => {
@@ -157,46 +134,6 @@ function App() {
     setCart((current) => current.filter((item) => item.productId !== productId))
   }
 
-  const addProduct = async (product: Omit<Product, 'id'>) => {
-    try {
-      const created = await createProduct(product)
-      setProducts((current) => [...current, created])
-      setProductSource('database')
-    } catch {
-      setProducts((current) => [
-        ...current,
-        {
-          ...product,
-          id: Math.max(0, ...current.map((item) => item.id)) + 1,
-        },
-      ])
-      setProductSource('local')
-    }
-  }
-
-  const updateProduct = async (product: Product) => {
-    try {
-      const updated = await updateProductOnApi(product)
-      setProducts((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-      setProductSource('database')
-    } catch {
-      setProducts((current) => current.map((item) => (item.id === product.id ? product : item)))
-      setProductSource('local')
-    }
-  }
-
-  const deleteProduct = async (productId: number) => {
-    try {
-      await deleteProductFromApi(productId)
-      setProductSource('database')
-    } catch {
-      setProductSource('local')
-    }
-
-    setProducts((current) => current.filter((product) => product.id !== productId))
-    setCart((current) => current.filter((item) => item.productId !== productId))
-  }
-
   const loginUser = async (email: string, password: string): Promise<AuthResult> => {
     try {
       const result = await loginWithApi(email, password)
@@ -220,7 +157,7 @@ function App() {
       setUser(result.user)
       setAccounts((current) => [
         ...current.filter((account) => account.email.toLowerCase() !== result.user.email.toLowerCase()),
-        { ...result.user, password: '' },
+        result.user,
       ])
 
       return {
@@ -259,6 +196,7 @@ function App() {
           element={
             user ? (
               <HomePage
+                categories={categories}
                 products={filteredProducts}
                 category={selectedCategory}
                 search={search}
@@ -347,11 +285,7 @@ function App() {
               <AdminPage
                 accounts={accounts}
                 ordersCount={cart.length}
-                productSource={productSource}
                 products={products}
-                onAddProduct={addProduct}
-                onDeleteProduct={deleteProduct}
-                onUpdateProduct={updateProduct}
               />
             ) : (
               <Navigate

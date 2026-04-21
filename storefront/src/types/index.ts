@@ -1,9 +1,7 @@
-export type Category = 'Âm thanh' | 'Thiết bị đeo' | 'Gaming' | 'Nhà thông minh'
-
 export type Product = {
   id: number
   name: string
-  category: Category
+  category: string
   price: number
   rating: number
   description: string
@@ -25,10 +23,6 @@ export type User = {
 }
 
 export type AccountRole = 'customer' | 'admin'
-
-export type RegisteredUser = User & {
-  password: string
-}
 
 export type AuthResult = {
   ok: boolean

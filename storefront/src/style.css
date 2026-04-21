@@ -986,7 +986,6 @@ h3 {
 }
 
 .auth-user-card,
-.auth-demo-box,
 .admin-card {
   display: grid;
   gap: 8px;
@@ -1004,22 +1003,18 @@ h3 {
   width: min(680px, 100%);
 }
 
-.account-actions,
-.admin-actions,
-.admin-row-actions {
+.account-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.account-actions .primary-link,
-.admin-actions button {
+.account-actions .primary-link {
   width: fit-content;
   margin-top: 0;
 }
 
 .auth-user-card span,
-.auth-demo-box span,
 .admin-card span {
   color: rgba(16, 35, 59, 0.62);
 }
@@ -1038,11 +1033,6 @@ h3 {
   font-weight: 700;
 }
 
-.auth-demo-box {
-  margin-top: 18px;
-  background: rgba(10, 143, 134, 0.08);
-}
-
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1055,10 +1045,6 @@ h3 {
   margin-top: 40px;
 }
 
-.admin-form {
-  margin-top: 22px;
-}
-
 .admin-product-list {
   display: grid;
   gap: 14px;
@@ -1066,7 +1052,7 @@ h3 {
 
 .admin-product-row {
   display: grid;
-  grid-template-columns: 92px 1fr auto;
+  grid-template-columns: 92px 1fr;
   align-items: center;
   gap: 16px;
   padding: 14px;
@@ -1085,10 +1071,6 @@ h3 {
 .admin-product-row h3,
 .admin-product-row p {
   margin: 0 0 6px;
-}
-
-.admin-row-actions {
-  justify-content: flex-end;
 }
 
 .empty-state {

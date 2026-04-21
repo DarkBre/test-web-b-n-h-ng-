@@ -48,7 +48,7 @@ function send_json(mixed $data, int $status = 200): void
     header('Access-Control-Allow-Credentials: true');
     header('Vary: Origin');
     header('Access-Control-Allow-Headers: Content-Type');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }

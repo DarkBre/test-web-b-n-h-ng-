@@ -37,8 +37,7 @@ CREATE TABLE products (
 
 INSERT INTO users (id, name, email, password_hash, role)
 VALUES
-  (1, 'Quản trị NovaTech', 'admin@novatech.vn', 'admin123', 'admin'),
-  (2, 'Khách hàng mẫu', 'user@novatech.vn', 'user123', 'customer');
+  (1, 'Quản trị NovaTech', 'admin@novatech.vn', 'admin123', 'admin');
 
 INSERT INTO products
   (id, name, category, price, rating, description, image, badge, colors, features)
