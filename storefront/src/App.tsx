@@ -285,7 +285,6 @@ function App() {
               <AdminPage
                 accounts={accounts}
                 ordersCount={cart.length}
-                products={products}
               />
             ) : (
               <Navigate
