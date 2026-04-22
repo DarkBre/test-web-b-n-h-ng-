@@ -61,8 +61,8 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
           <p className="eyebrow">Thông tin tài khoản</p>
           <h1>Xin chào, {user.name}</h1>
           <p className="detail-copy">
-            Đây là trang hồ sơ của bạn. Tài khoản đang được dùng để mua hàng, thanh toán và truy cập
-            các chức năng theo đúng quyền.
+            Đây là trang hồ sơ của bạn. Hệ thống dùng thông tin này để xác định trạng thái đăng
+            nhập và quyền truy cập.
           </p>
 
           {redirectReason ? <div className="auth-notice">{redirectReason}</div> : null}
@@ -77,9 +77,6 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
           </div>
 
           <div className="account-actions">
-            <Link className="primary-link" to="/cart">
-              Xem giỏ hàng
-            </Link>
             {user.role === 'admin' ? (
               <Link className="primary-link" to="/admin">
                 Vào trang quản trị
@@ -100,13 +97,13 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
         <p className="eyebrow">Tài khoản khách hàng</p>
         <h1>{mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}</h1>
         <p className="detail-copy">
-          Đăng nhập để đồng bộ giỏ hàng, thanh toán và truy cập chức năng theo đúng quyền tài khoản.
+          Đăng nhập để truy cập hệ thống tài khoản theo đúng quyền người dùng.
         </p>
 
         {redirectReason ? <div className="auth-notice">{redirectReason}</div> : null}
         {status ? <div className="auth-notice">{status}</div> : null}
 
-        <form className="checkout-form" onSubmit={submit}>
+        <form className="auth-form" onSubmit={submit}>
           {mode === 'register' ? (
             <label>
               Họ tên

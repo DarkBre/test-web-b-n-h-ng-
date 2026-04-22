@@ -1,23 +1,19 @@
-# NovaTech PHP API
+# NovaTech Auth API
 
-Backend được chia theo mô hình MVC đơn giản:
+Backend hiện chỉ phục vụ chức năng tài khoản: đăng nhập, đăng ký, đăng xuất, kiểm tra phiên đăng nhập và phân quyền.
 
 ```text
 backend/
   auth.php                     # Wrapper giữ URL cũ
-  products.php                 # Wrapper giữ URL cũ
   config/
-    database.php               # Kết nối MySQL, CORS, JSON helper
+    database.php               # Kết nối MySQL, CORS, session, JSON helper
   controllers/
     AuthController.php         # Xử lý đăng nhập, đăng ký, đăng xuất, phân quyền
-    ProductController.php      # Đọc danh sách sản phẩm
   models/
     User.php                   # Truy vấn bảng users
-    Product.php                # Truy vấn bảng products
   public/
     auth.php                   # Entry chính cho API tài khoản
-    products.php               # Entry chính cho API sản phẩm
-  novatech_products.sql        # File import phpMyAdmin
+  novatech_auth.sql            # File import phpMyAdmin cho bảng users
 ```
 
 ## Cài đặt nhanh với XAMPP
@@ -25,26 +21,19 @@ backend/
 1. Mở XAMPP và bật `Apache` + `MySQL`.
 2. Vào `http://localhost/phpmyadmin`.
 3. Chọn tab `Import`.
-4. Import file `backend/novatech_products.sql`.
-5. Tạo thư mục `novatech-api` trong thư mục `htdocs` của XAMPP đang chạy.
+4. Import file `backend/novatech_auth.sql`.
+5. Tạo thư mục `novatech-api` trong thư mục `htdocs` của XAMPP.
 6. Copy toàn bộ file bên trong thư mục `backend` vào thư mục đó.
 
-Trên máy hiện tại, Apache đang đọc `C:\xampp\htdocs`, nên backend cần nằm tại:
+Đường dẫn backend local:
 
 ```text
 C:\xampp\htdocs\novatech-api
 ```
 
-Nếu bạn cấu hình Apache đọc ổ D thì dùng:
+Mở thử API:
 
 ```text
-D:\xampp\htdocs\novatech-api
-```
-
-7. Mở thử API:
-
-```text
-http://localhost/novatech-api/products.php
 http://localhost/novatech-api/auth.php?action=list
 ```
 
@@ -52,7 +41,7 @@ Nếu trả về JSON là backend đã chạy.
 
 ## Cấu hình database
 
-Nếu MySQL của bạn có mật khẩu, sửa file `config/database.php`:
+Nếu MySQL có mật khẩu, sửa file `config/database.php`:
 
 ```php
 const DB_USER = 'root';
@@ -67,18 +56,17 @@ File `storefront/.env.local` cần có:
 VITE_API_URL=http://localhost/novatech-api
 ```
 
-Sau đó chạy lại frontend:
+Sau đó chạy frontend:
 
 ```bash
 cd storefront
 npm run dev
 ```
 
-Frontend hiện dùng:
+## API hiện có
 
-- `products.php` để đọc danh sách sản phẩm từ MySQL.
 - `auth.php?action=login` cho đăng nhập.
 - `auth.php?action=register` cho đăng ký.
 - `auth.php?action=logout` cho đăng xuất.
 - `auth.php?action=me` để kiểm tra phiên đăng nhập hiện tại.
-- `auth.php?action=list` để trang quản trị đọc danh sách tài khoản.
+- `auth.php?action=list` để tài khoản admin đã đăng nhập đọc danh sách tài khoản.

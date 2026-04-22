@@ -1,28 +1,39 @@
 import type { User } from '../types'
+import { roleLabels } from '../utils/auth'
 
 type AdminPageProps = {
   accounts: User[]
-  ordersCount: number
 }
 
-export function AdminPage({ accounts, ordersCount }: AdminPageProps) {
+export function AdminPage({ accounts }: AdminPageProps) {
   return (
     <main className="admin-layout page-enter">
       <section className="panel">
         <div className="section-head">
-          <h2>Trang quản trị</h2>
-          <span>Theo dõi tài khoản và giỏ hàng hiện có</span>
+          <div>
+            <p className="eyebrow">Quản trị viên</p>
+            <h1>Trang phân quyền tài khoản</h1>
+          </div>
+          <span>{accounts.length} tài khoản trong hệ thống</span>
         </div>
 
-        <div className="admin-grid">
-          <article className="admin-card">
-            <span>Tài khoản</span>
-            <strong>{accounts.length}</strong>
-          </article>
-          <article className="admin-card">
-            <span>Giỏ hàng hiện tại</span>
-            <strong>{ordersCount}</strong>
-          </article>
+        <div className="account-list">
+          {accounts.length === 0 ? (
+            <div className="empty-state">
+              <h3>Chưa tải được danh sách tài khoản</h3>
+              <p>Hãy kiểm tra backend XAMPP và API auth.php?action=list.</p>
+            </div>
+          ) : null}
+
+          {accounts.map((account) => (
+            <article className="account-row" key={account.email}>
+              <div>
+                <h3>{account.name}</h3>
+                <p>{account.email}</p>
+              </div>
+              <span className="role-pill">{roleLabels[account.role]}</span>
+            </article>
+          ))}
         </div>
       </section>
     </main>

@@ -39,6 +39,7 @@ class AuthController
 
     private function index(): void
     {
+        $this->requireAdmin();
         send_json(UserModel::all());
     }
 
@@ -142,6 +143,15 @@ class AuthController
         $user = $statement->fetch();
 
         return $user ?: null;
+    }
+
+    private function requireAdmin(): void
+    {
+        $user = $this->sessionUser();
+
+        if (!$user || (string) $user['role'] !== 'admin') {
+            send_json(['message' => 'Bạn cần đăng nhập bằng tài khoản quản trị.'], 403);
+        }
     }
 
     private function passwordIsValid(string $password, string $storedPassword): bool
