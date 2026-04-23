@@ -14,16 +14,6 @@ const normalizeUser = (user: User): User => ({
   role: user.role ?? 'customer',
 })
 
-export const fetchUsers = async (): Promise<User[]> => {
-  const users = await parseResponse<User[]>(
-    await fetchApi(`${AUTH_ENDPOINT}?action=list`, {
-      credentials: 'include',
-    }),
-  )
-
-  return users.map(normalizeUser)
-}
-
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
   const response = await parseResponse<AuthResponse>(
     await fetchApi(`${AUTH_ENDPOINT}?action=login`, {

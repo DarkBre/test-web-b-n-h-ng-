@@ -6,7 +6,6 @@ import { AuthPage } from './pages/AuthPage'
 import { HomePage } from './pages/HomePage'
 import {
   fetchCurrentUser,
-  fetchUsers,
   login as loginWithApi,
   logout as logoutWithApi,
   register as registerWithApi,
@@ -19,7 +18,6 @@ import { readSessionStorage } from './utils/storage'
 const readStoredUser = () => normalizeUser(readSessionStorage<User | null>('user', null))
 
 function App() {
-  const [accounts, setAccounts] = useState<User[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [user, setUser] = useState<User | null>(readStoredUser)
 
@@ -29,17 +27,6 @@ function App() {
     } else {
       sessionStorage.removeItem('user')
     }
-  }, [user])
-
-  useEffect(() => {
-    if (user?.role !== 'admin') {
-      setAccounts([])
-      return
-    }
-
-    fetchUsers()
-      .then(setAccounts)
-      .catch(() => setAccounts([]))
   }, [user])
 
   useEffect(() => {
@@ -86,10 +73,6 @@ function App() {
     try {
       const result = await registerWithApi(name, email, password)
       setUser(result.user)
-      setAccounts((current) => [
-        ...current.filter((account) => account.email.toLowerCase() !== result.user.email.toLowerCase()),
-        result.user,
-      ])
 
       return {
         ok: true,
@@ -139,12 +122,7 @@ function App() {
             user ? (
               <Navigate replace to={user.role === 'admin' ? '/admin' : '/'} />
             ) : (
-              <AuthPage
-                user={user}
-                onLogin={loginUser}
-                onLogout={logoutUser}
-                onRegister={registerUser}
-              />
+              <AuthPage onLogin={loginUser} onRegister={registerUser} />
             )
           }
         />
@@ -152,7 +130,7 @@ function App() {
           path="/admin"
           element={
             user?.role === 'admin' ? (
-              <AdminPage accounts={accounts} />
+              <AdminPage />
             ) : (
               <Navigate
                 replace

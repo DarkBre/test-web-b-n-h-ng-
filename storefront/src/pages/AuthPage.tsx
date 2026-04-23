@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import type { AuthResult, User } from '../types'
-import { roleLabels } from '../utils/auth'
+import { useLocation } from 'react-router-dom'
+import type { AuthResult } from '../types'
 
 type AuthPageProps = {
-  user: User | null
   onLogin: (email: string, password: string) => AuthResult | Promise<AuthResult>
-  onLogout: () => void
   onRegister: (
     name: string,
     email: string,
@@ -15,13 +12,13 @@ type AuthPageProps = {
   ) => AuthResult | Promise<AuthResult>
 }
 
-export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps) {
+export function AuthPage({ onLogin, onRegister }: AuthPageProps) {
   const location = useLocation()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    name: user?.name ?? '',
+    name: '',
     email: '',
     password: '',
   })
@@ -54,51 +51,12 @@ export function AuthPage({ user, onLogin, onLogout, onRegister }: AuthPageProps)
     setMode((current) => (current === 'login' ? 'register' : 'login'))
   }
 
-  if (user) {
-    return (
-      <main className="auth-layout page-enter">
-        <section className="auth-panel account-panel">
-          <p className="eyebrow">Thông tin tài khoản</p>
-          <h1>Xin chào, {user.name}</h1>
-          <p className="detail-copy">
-            Đây là trang hồ sơ của bạn. Hệ thống dùng thông tin này để xác định trạng thái đăng
-            nhập và quyền truy cập.
-          </p>
-
-          {redirectReason ? <div className="auth-notice">{redirectReason}</div> : null}
-
-          <div className="auth-user-card">
-            <span>Họ tên</span>
-            <strong>{user.name}</strong>
-            <span>Email</span>
-            <p>{user.email}</p>
-            <span>Phân quyền</span>
-            <div className="role-pill">{roleLabels[user.role]}</div>
-          </div>
-
-          <div className="account-actions">
-            {user.role === 'admin' ? (
-              <Link className="primary-link" to="/admin">
-                Vào trang quản trị
-              </Link>
-            ) : null}
-            <button className="ghost-button" onClick={onLogout}>
-              Đăng xuất
-            </button>
-          </div>
-        </section>
-      </main>
-    )
-  }
-
   return (
     <main className="auth-layout page-enter">
       <section className="auth-panel">
         <p className="eyebrow">Tài khoản khách hàng</p>
         <h1>{mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}</h1>
-        <p className="detail-copy">
-          Đăng nhập để truy cập hệ thống tài khoản theo đúng quyền người dùng.
-        </p>
+        <p className="detail-copy">Đăng nhập để truy cập hệ thống tài khoản theo đúng quyền người dùng.</p>
 
         {redirectReason ? <div className="auth-notice">{redirectReason}</div> : null}
         {status ? <div className="auth-notice">{status}</div> : null}
