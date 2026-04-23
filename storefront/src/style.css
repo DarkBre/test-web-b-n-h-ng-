@@ -311,6 +311,9 @@ h3 {
 }
 
 .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 24px;
@@ -345,7 +348,9 @@ h3 {
 }
 
 .product-content {
-  display: grid;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   gap: 14px;
   padding: 18px;
 }
@@ -367,8 +372,13 @@ h3 {
 }
 
 .product-content p {
+  flex: 1;
   color: rgba(16, 35, 59, 0.72);
   line-height: 1.55;
+}
+
+.product-footer {
+  margin-top: auto;
 }
 
 .product-footer strong {
